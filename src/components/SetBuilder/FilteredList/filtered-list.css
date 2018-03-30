@@ -1,0 +1,8 @@
+.filteredList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: #2a2322;
+  max-width: 95%;
+  margin: 0 auto;
+}

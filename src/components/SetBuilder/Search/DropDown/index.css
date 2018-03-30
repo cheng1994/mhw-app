@@ -1,0 +1,23 @@
+.dropDown {
+  position: relative;
+  cursor: pointer;
+  outline: none;
+}
+
+.dropDown__container {
+  position: absolute;
+}
+
+.dropDown__list {
+  position: absolute;
+  z-index: 100;
+  background: rgba(46, 40, 39, 0.8);
+  padding: 1rem;
+  border-radius: 0 0 .5rem 0.5rem;
+  box-shadow: .3rem .3rem .1rem grey;
+}
+
+.dropDown__listItem {
+  font-size: 1.8rem;
+  padding: 1rem 0;
+}

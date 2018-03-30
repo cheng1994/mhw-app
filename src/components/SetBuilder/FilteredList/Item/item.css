@@ -1,0 +1,21 @@
+.item {
+  border: 1px solid grey;
+  border-radius: 5px;
+  margin: 10px;
+  width: 20rem;
+  box-shadow: 0 0 .2rem grey;
+  background: black;
+  color: white;
+}
+
+.item__title {
+  font-size: 1.2rem;
+  background: #272526;
+  height: 1.4rem;
+  padding: .25rem;
+  font-weight: 300
+}
+
+.item__title--center {
+  text-align: center;
+}

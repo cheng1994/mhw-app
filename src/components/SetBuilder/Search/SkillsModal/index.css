@@ -1,0 +1,8 @@
+.skillsModal {
+  max-height: 80rem;
+}
+
+.skillsModal__list {
+  overflow: scroll;
+  max-height: 50rem;
+}
