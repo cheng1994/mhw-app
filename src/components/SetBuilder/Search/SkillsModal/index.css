@@ -1,8 +1,38 @@
 .skillsModal {
-  max-height: 80rem;
+  color: white;
+  height: 120rem;
+  cursor: pointer;
+}
+
+.skillsModal .modal-content {
+  background: rgba(105,105,105,0.8);
+  color: white;
+}
+
+.skillsModal__title {
+  color: white;
+  font-weight: bold;
 }
 
 .skillsModal__list {
-  overflow: scroll;
-  max-height: 50rem;
+}
+
+.skillsModal__item {
+  font-size: 1.8rem;
+  margin: 0.2rem 0;
+  padding: 0.8rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+}
+
+.skillsModal__item:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.skillsModal__item:first-child {
+  margin-top: 0;
+}
+
+.skillsModal__item:last-child {
+  margin-bottom: 0;
 }

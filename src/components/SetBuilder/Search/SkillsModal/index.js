@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { Modal, Button } from 'antd';
+import { Button, Modal } from 'react-bootstrap';
 import './index.css'
+
+import Pagination from '../../../Pagination';
 
 const INITIAL_STATE = {
   visible: false,
+  pageOfItems: []
 }
 
 class SkillsModal extends Component {
@@ -17,7 +20,8 @@ class SkillsModal extends Component {
     this.setState(() => ({ 'visible': true }));
   }
 
-  handleOk = (e) => {
+  handleSelection = (name) => {
+    this.props.callbackFromParent(name);
     this.setState(() => ({ visible: false }))
   }
 
@@ -25,32 +29,41 @@ class SkillsModal extends Component {
     this.setState(() => ({ visible: false }))
   }
 
+  onChangePage = (pageOfItems) => {
+    this.setState({ pageOfItems })
+  }
+
   render() {
     const {
-      skills
+      skills,
     } = this.props;
     const {
-      visible
+      visible,
+      pageOfItems
     } = this.state;
 
     return (
       <div>
-         <Button type="primary" onClick={this.showModal}>Open</Button>
-         <Modal
-           wrapClassName="skillsModal"
-           visible={visible}
-           title="Skills"
-           onOk={this.handleOk}
-           onCancel={this.handleCancel}
-          >
-            <div className="skillsModal__list">
+        <div onClick={this.showModal}>Skills</div>
+        <Modal
+          show={visible}>
+          <Modal.Dialog className="skillsModal">
+            <Modal.Header>
+              <Modal.Title className="skillsModal__title">Skills</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="skillsModal__list">
               {
-                Object.keys(skills).map(key => {
-                  return <div key={key}>{skills[key].name}</div>
-                })
+                Object.keys(pageOfItems).map(key =>
+                  <div className="skillsModal__item" key={key} onClick={event => this.handleSelection(pageOfItems[key].name)}>{pageOfItems[key].name}</div>
+                )
               }
-            </div>
-          </Modal>
+              <Pagination items={skills} onChangePage={this.onChangePage} />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={this.handleCancel}>Close</Button>
+            </Modal.Footer>
+          </Modal.Dialog>
+        </Modal>
       </div>
     )
   }

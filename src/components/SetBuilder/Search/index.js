@@ -3,23 +3,25 @@ import './index.css';
 
 import { weapon } from '../../../firebase';
 import { armor } from '../../../firebase';
-import { decorations } from '../../../firebase';
+import { skills } from '../../../firebase';
 import DropDown from './DropDown';
 import SkillsModal from './SkillsModal';
+import Pills from './Pills';
 
 const INITIAL_STATE = {
   searchText: '',
   weapons: [],
-  decorations: {},
+  skills: [],
   filteredItems: {},
   error: null,
   filters: {
+    search: '',
     type: '',
     slot: '',
     skill: '',
     deco: '',
     rarity: '',
-    resistance: ''
+    element: ''
   }
 }
 
@@ -48,19 +50,17 @@ const armorSlot = [
   'Legs'
 ];
 
-const slots = [
-  1,
-  2,
-  3,
-  4
-]
+const slots = Array(4).fill(1).map((x, i) => x+i);
 
-const slugConvert = (str) => {
-  return str
-    .toLowerCase()
-    .split(' ')
-    .join('-');
-}
+const rarity = Array(8).fill(1).map((x, i) => x+i);
+
+const element = [
+  'Fire',
+  'Water',
+  'Thunder',
+  'Ice',
+  'Dragon'
+]
 
 const byPropKey = (propertyName, value) => () => ({
   [propertyName]: value
@@ -73,36 +73,47 @@ class Search extends Component {
     this.mounted = true;
 
     this.state = { ...INITIAL_STATE };
-    this.getDecorations();
+    this.getSkills();
   }
 
-  getDecorations = () => {
-    decorations.getDecorations().then(data => {
+  getSkills = () => {
+    skills.getSkills().then(data => {
       console.log(data);
-      this.setState(() => ({ decorations: data}));
+      this.setState(() => ({ skills: data}));
     })
   }
 
-  getArmor(value) {
-    value = slugConvert(value);
-    armor.getArmorByName(value).then(data => {
-      this.setState(() => ({ 'filteredItems': data }))
-      this.props.callbackFromParent(this.state.filteredItems);
-    })
-  }
+  get(value) {
+    if(!!value.type && value.type.toLowerCase() === 'armor'){
+      armor.get(value).then(data => {
+        console.log(data);
+        this.setState(() => ({ 'filteredItems': data }));
+        this.props.callbackFromParent(this.state.filteredItems);
+      })
+    } else if(!!value.type && value.type.toLowerCase() === 'weapons'){
+      weapon.get(value).then(data => {
+        console.log(data);
+        this.setState(() => ({ 'filteredItems': data }));
+        this.props.callbackFromParent(this.state.filteredItems);
+      })
+    }
 
-  handleSearch(event) {
-    this.setState(byPropKey('searchText', event.target.value));
-    this.getArmor(event.target.value);
+    // Object.keys(value).map(key => {
+    //
+    // })
+    // armor.getArmorByName(value).then(data => {
+    //
+    //
+    // })
   }
 
   setFilters = (value, filter) => {
     const {
       filters
     } = this.state;
-
     filters[filter] = value;
     this.setState(() => ({ filters }))
+    this.get(filters);
   }
 
   componentWillUnmount(){
@@ -113,7 +124,7 @@ class Search extends Component {
     const {
       searchText,
       filters,
-      decorations
+      skills
     } = this.state
 
     return (
@@ -122,34 +133,54 @@ class Search extends Component {
           <DropDown
             index="0"
             filter="Type"
-            items={['Armors', 'Weapons']}
+            items={['Armor', 'Weapons']}
             callbackFromParent={item => this.setFilters(item, 'type')}
           />
           <DropDown
             index="1"
             filter="Slot"
-            items={filters.type == 'Armors' ? armorSlot : weaponSlot}
+            items={filters.type == 'Armor' ? armorSlot : weaponSlot}
             callbackFromParent={item => this.setFilters(item, 'slot')}
           />
-          <SkillsModal skills={decorations} callbackFromParent={item => this.setFilters(item, 'deco')}/>
+          <SkillsModal skills={skills} callbackFromParent={item => this.setFilters(item, 'skill')}/>
           <DropDown
             index="3"
             filter="Decoration Slots"
             items={slots}
             callbackFromParent={item => this.setFilters(item, 'deco')}
           />
-          <DropDown index="4" filter="Rarity" />
-          <DropDown index="5" filter="Resistance" />
-        </div>
-
-        <div className="search__input">
-          <input
-            value={searchText}
-            onChange={this.handleSearch.bind(this)}
-            type="text"
-            placeholder="Search for"
+          <DropDown
+            index="4"
+            filter="Rarity"
+            items={rarity}
+            callbackFromParent={item => this.setFilters(item, 'rarity')}
+          />
+          <DropDown
+            index="5"
+            filter="Element"
+            items={element}
+            callbackFromParent={item => this.setFilters(item, 'element')}
           />
         </div>
+        { !!filters.type &&
+          <div className="search__container">
+            <div className="search__input">
+              <input
+                value={filters.search}
+                onChange={event => this.setFilters(event.target.value, 'search')}
+                type="text"
+                placeholder="Search for"
+              />
+            </div>
+            <div className="search__pills">
+              <Pills
+                filters={filters}
+                callbackFromParent={item => this.setFilters('', item)}
+              />
+            </div>
+          </div>
+        }
+
       </div>
     )
   }

@@ -7,10 +7,6 @@
   justify-content: space-between;
   align-items: center;
   font-size: 2rem;
-  background:
-    url('../header_top.png') no-repeat center 0,
-    url('../header_bottom.png') no-repeat center bottom;
-  background-size: 100%;
   width: 90%;
   height: 6rem;
   margin: 0 auto;
@@ -18,9 +14,19 @@
   box-sizing: border-box;
 }
 
+.search__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search__pills {
+  width: 70%;
+}
+
 .search__input {
   margin: 1rem auto;
-  width: 95%;
+  width: 30%;
 }
 
 .search__input input {

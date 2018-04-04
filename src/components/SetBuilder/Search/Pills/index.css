@@ -1,0 +1,19 @@
+.pill {
+  border-radius: .5rem;
+  background: rgba(56, 148, 56, 0.8);
+  color: white;
+  padding: 0.5rem 1.3rem;
+  margin: 0 0.8rem;
+  font-weight: bold;
+}
+
+.pill__container {
+  display: flex;
+  margin: 1rem;
+  justify-content: flex-end;
+}
+
+.pill__close {
+  padding: .5rem;
+  font-size: 1.3rem;
+}
