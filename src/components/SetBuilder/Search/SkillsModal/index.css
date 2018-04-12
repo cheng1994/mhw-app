@@ -1,12 +1,29 @@
 .skillsModal {
   color: white;
   height: 120rem;
-  cursor: pointer;
 }
 
 .skillsModal .modal-content {
   background: rgba(105,105,105,0.8);
   color: white;
+}
+
+.skillsModal__button {
+  cursor: pointer;
+  outline: none;
+  padding: .8rem 2.5rem;
+  border: 1px solid #565353;
+  background:
+    url("../../top_corner_gray.svg") left 0/11px 11px no-repeat,
+    url("../../bottom_corner_gray.svg") right bottom/11px 11px no-repeat
+}
+
+.skillsModal__button:hover {
+  color: #cfee1d;
+  border-color: #cfee1d;
+  background:
+    url("../../top_corner_green.svg") left 0/11px 11px no-repeat,
+    url("../../bottom_corner_green.svg") right bottom/11px 11px no-repeat
 }
 
 .skillsModal__title {

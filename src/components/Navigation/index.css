@@ -10,3 +10,19 @@
   text-decoration: none;
   margin: 0 1rem;
 }
+
+.navigation__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 0.5rem solid #565353;
+  margin-bottom: 1rem;
+}
+
+.navigation__title {
+  color: whitesmoke;
+  font-weight: 300;
+  text-shadow: 0 .1rem grey;
+  padding: 0;
+  margin: 1rem;
+}

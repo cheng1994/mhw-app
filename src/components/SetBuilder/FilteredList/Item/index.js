@@ -12,6 +12,8 @@ const splitSlug = (str) => {
 
 const Item = ({ item }) => (
   <div className="item">
+    <div className="item__cornerTop"></div>
+    <div className="item__cornerBottom"></div>
     <div className="item__title item__title--center">{item.name}</div>
     <div className="item__title">Skills</div>
     { !!item.skills &&

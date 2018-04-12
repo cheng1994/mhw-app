@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-var armors = []
+var charms = []
 
 // temp usage of api will be replacing with firebase storage of data
 const instance = axios.create({
@@ -10,7 +10,7 @@ const instance = axios.create({
 
 const promiseBoilerPlate = (searchParam) => {
   return new Promise((resolve, reject) => {
-    instance.get('/armor' + searchParam)
+    instance.get('/charms' + searchParam)
       .then(response => {
         resolve(response.data);
       })
@@ -20,17 +20,17 @@ const promiseBoilerPlate = (searchParam) => {
   })
 }
 
-// get all armors
-export const getArmors = () => {
+// get all charms
+export const getCharms = () => {
   return new Promise((resolve, reject)=>{
-    if(armors.length > 0){
-      resolve(armors);
+    if(charms.length > 0){
+      resolve(charms);
     }
     instance.get('/armor')
       .then(response => {
-        if(armors !== response)
-          armors = response.data;
-        resolve(armors)
+        if(charms !== response)
+          charms = response.data;
+        resolve(charms)
       })
       .catch(error => {
         reject(error);

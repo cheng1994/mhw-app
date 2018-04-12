@@ -7,18 +7,6 @@ const instance = axios.create({
   timeout: 5000,
 });
 
-const promiseBoilerPlate = (searchParam) => {
-  return new Promise((resolve, reject) => {
-    instance.get('/skills' + searchParam)
-      .then(response => {
-        resolve(response.data);
-      })
-      .catch(error => {
-        reject(error);
-      })
-  })
-}
-
 // get all skills
 export const getSkills = () => {
   return new Promise((resolve, reject)=>{

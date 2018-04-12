@@ -1,0 +1,33 @@
+.previewSet__container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
+}
+
+.previewSet__item {
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #565353;
+  box-shadow: 0 0 .2rem grey;
+}
+
+.previewSet__item--legs {
+  grid-column-start: 2
+}
+
+.previewSet__name {
+  font-size: 2rem;
+}
+
+.previewSet__imageContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.previewSet__imageContainer {
+  opacity: 0.8;
+  border-radius: 1rem;
+}

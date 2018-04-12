@@ -44,9 +44,10 @@ class SkillsModal extends Component {
 
     return (
       <div>
-        <div onClick={this.showModal}>Skills</div>
+        <div className="skillsModal__button" onClick={this.showModal}>Skills</div>
         <Modal
-          show={visible}>
+          show={visible}
+          bsSize="large">
           <Modal.Dialog className="skillsModal">
             <Modal.Header>
               <Modal.Title className="skillsModal__title">Skills</Modal.Title>

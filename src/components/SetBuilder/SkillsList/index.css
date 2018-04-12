@@ -1,0 +1,38 @@
+.skillsList {
+  border: 1px solid #565353;
+  background:
+    url("../top_corner_gray.svg") left 0/2rem 2rem no-repeat,
+    url("../bottom_corner_gray.svg") right bottom/2rem 2rem no-repeat;
+  max-width: 30rem;
+}
+
+.skillsList__title {
+  font-size: 2rem;
+  padding: 0;
+  margin: 1rem;
+  font-weight: bold;
+  color: #cfee1d;
+  text-align: center;
+}
+
+.skillsList__item {
+  margin: 1rem 0;
+  padding: 0.8rem 1.5rem;
+  background-color: rgba(43,42,42, 0.8);
+}
+
+.skillsList__levelContainer {
+  display: flex;
+}
+
+.skillsList__bar {
+  height: 1.5rem;
+  width: 1.5rem;
+  background: lightgrey;
+  border: 1px solid #565353;
+  border-radius: 0.2rem;
+}
+
+.skillsList__bar--active {
+  background: #cfee1d;
+}

@@ -9,7 +9,7 @@ const Pills  = (props) => {
 
   const clearFilter = (key) => {
     filters[key] = '';
-    callbackFromParent(key)
+    callbackFromParent(key);
   }
 
   return (
@@ -19,6 +19,7 @@ const Pills  = (props) => {
           if(filters[key]) {
             return <div className="pill" key={key} onClick={event => clearFilter(key)}>{ filters[key] } <span className="pill__close">X</span></div>
           }
+          return null;
         })
       }
     </div>

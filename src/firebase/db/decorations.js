@@ -37,6 +37,30 @@ export const getDecorations = () => {
   });
 }
 
-export const getDecorationbyName = (value) => {
-  return promiseBoilerPlate(`?q={ "name": { "$like": "${value}%" }}`);
+export const get = (value) => {
+  let param = "?q={";
+  // eslint-disable-next-line
+  Object.keys(value).map(key => {
+    if(value[key]){
+      if(key === 'search'){
+        param += `"name": { "$like": "${value[key]}%"},`
+      } else if(key === 'slot') {
+        param += `"type": "${value[key].toLowerCase()}",`
+      } else if(key === 'skill') {
+        param += `"skills.skill.name": "${value[key]}",`
+      } else if(key === 'deco') {
+        param += `"attributes.slotsRank${value[key]}": { "$exists": true },`
+      } else if(key === 'rarity') {
+        param += `"rarity": "${value[key]}",`
+      } else if(key === 'element') {
+        param += `"attributes.resist${value[key]}": { "$gt": 0 },`
+      }
+    }
+  });
+  param = param.replace(/,$/, '');
+  param += "}";
+  if(param === "?q={}"){
+    param = ""
+  }
+  return promiseBoilerPlate(param);
 }

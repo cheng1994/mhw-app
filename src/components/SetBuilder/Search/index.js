@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import './index.css';
 
-import { weapon } from '../../../firebase';
-import { armor } from '../../../firebase';
-import { skills } from '../../../firebase';
+import { weapon, armor, skills, charms, decorations } from '../../../firebase';
 import DropDown from './DropDown';
 import SkillsModal from './SkillsModal';
 import Pills from './Pills';
@@ -62,10 +60,6 @@ const element = [
   'Dragon'
 ]
 
-const byPropKey = (propertyName, value) => () => ({
-  [propertyName]: value
-})
-
 class Search extends Component {
   constructor(props){
     super(props);
@@ -78,42 +72,67 @@ class Search extends Component {
 
   getSkills = () => {
     skills.getSkills().then(data => {
-      console.log(data);
       this.setState(() => ({ skills: data}));
     })
   }
 
   get(value) {
-    if(!!value.type && value.type.toLowerCase() === 'armor'){
-      armor.get(value).then(data => {
-        console.log(data);
-        this.setState(() => ({ 'filteredItems': data }));
-        this.props.callbackFromParent(this.state.filteredItems);
-      })
-    } else if(!!value.type && value.type.toLowerCase() === 'weapons'){
-      weapon.get(value).then(data => {
-        console.log(data);
-        this.setState(() => ({ 'filteredItems': data }));
-        this.props.callbackFromParent(this.state.filteredItems);
-      })
-    }
+    if(this.mounted){
+      if(!!value.type && value.type.toLowerCase() === 'armor'){
+        armor.get(value).then(data => {
+          this.setState(() => ({ 'filteredItems': data }), () => {
+            this.props.callbackFromParent(this.state.filteredItems);
+          });
 
-    // Object.keys(value).map(key => {
-    //
-    // })
-    // armor.getArmorByName(value).then(data => {
-    //
-    //
-    // })
+        })
+      } else if(!!value.type && value.type.toLowerCase() === 'weapons'){
+        weapon.get(value).then(data => {
+          this.setState(() => ({ 'filteredItems': data }), () => {
+            this.props.callbackFromParent(this.state.filteredItems);
+          });
+        })
+      } else if(!!value.type && value.type.toLowerCase() === 'charms') {
+        charms.get(value).then(data => {
+          this.setState(() => ({ 'filteredItems': data }), () => {
+            this.props.callbackFromParent(this.state.filteredItems);
+          });
+        })
+      } else if(!!value.type && value.type.toLowerCase() === 'decorations') {
+        decorations.get(value).then(data => {
+          this.setState(() => ({ 'filteredItems': data }), () => {
+            this.props.callbackFromParent(this.state.filteredItems);
+          });
+        })
+      }
+    }
   }
 
   setFilters = (value, filter) => {
     const {
       filters
     } = this.state;
-    filters[filter] = value;
-    this.setState(() => ({ filters }))
-    this.get(filters);
+
+    if(value === '' && filter === 'type'){
+      let temp = {
+        search: '',
+        type: '',
+        slot: '',
+        skill: '',
+        deco: '',
+        rarity: '',
+        element: ''
+      }
+
+      this.setState(() => ({ "filters": temp, 'filteredItems': [] }), () => {
+        this.props.callbackFromParent([]);
+      });
+    } else {
+      filters[filter] = value;
+      this.setState(() => ({ filters }), () => {
+        this.get(filters);
+      })
+    }
+
   }
 
   componentWillUnmount(){
@@ -122,7 +141,6 @@ class Search extends Component {
 
   render(){
     const {
-      searchText,
       filters,
       skills
     } = this.state
@@ -133,34 +151,46 @@ class Search extends Component {
           <DropDown
             index="0"
             filter="Type"
-            items={['Armor', 'Weapons']}
+            items={['Armor', 'Weapons', 'Charms', 'Decorations']}
             callbackFromParent={item => this.setFilters(item, 'type')}
           />
-          <DropDown
-            index="1"
-            filter="Slot"
-            items={filters.type == 'Armor' ? armorSlot : weaponSlot}
-            callbackFromParent={item => this.setFilters(item, 'slot')}
-          />
-          <SkillsModal skills={skills} callbackFromParent={item => this.setFilters(item, 'skill')}/>
-          <DropDown
-            index="3"
-            filter="Decoration Slots"
-            items={slots}
-            callbackFromParent={item => this.setFilters(item, 'deco')}
-          />
+          {
+            (filters.type === 'Armor' || filters.type === 'Weapons') &&
+            <DropDown
+              index="1"
+              filter="Slot"
+              items={filters.type === 'Armor' ? armorSlot : weaponSlot}
+              callbackFromParent={item => this.setFilters(item, 'slot')}
+            />
+          }
+          {
+            (filters.type === 'Armor' || filters.type === 'Charms') &&
+            <SkillsModal skills={skills} callbackFromParent={item => this.setFilters(item, 'skill')}/>
+          }
+          {
+            (filters.type === 'Weapons' || filters.type === 'Armor') &&
+            <DropDown
+              index="3"
+              filter="Decoration Slots"
+              items={slots}
+              callbackFromParent={item => this.setFilters(item, 'deco')}
+            />
+          }
           <DropDown
             index="4"
             filter="Rarity"
             items={rarity}
             callbackFromParent={item => this.setFilters(item, 'rarity')}
           />
-          <DropDown
-            index="5"
-            filter="Element"
-            items={element}
-            callbackFromParent={item => this.setFilters(item, 'element')}
-          />
+          {
+            (filters.type === 'Weapons' || filters.type === 'Armor') &&
+            <DropDown
+              index="5"
+              filter="Element"
+              items={element}
+              callbackFromParent={item => this.setFilters(item, 'element')}
+            />
+          }
         </div>
         { !!filters.type &&
           <div className="search__container">

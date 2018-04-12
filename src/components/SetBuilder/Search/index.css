@@ -4,7 +4,7 @@
 
 .search__filters {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
   font-size: 2rem;
   width: 90%;
@@ -12,6 +12,10 @@
   margin: 0 auto;
   padding: 0 5rem;
   box-sizing: border-box;
+}
+
+.search__filters>* {
+  margin: 0 1rem;
 }
 
 .search__container {

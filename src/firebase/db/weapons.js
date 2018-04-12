@@ -49,6 +49,7 @@ export const getWeaponByName = (name) => {
 
 export const get = (value) => {
   let param = "?q={";
+  // eslint-disable-next-line
   Object.keys(value).map(key => {
     if(value[key]){
       if(key === 'search'){

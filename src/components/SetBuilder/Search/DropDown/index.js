@@ -18,9 +18,6 @@ class DropDown extends Component {
   }
 
   handleClick = (item) => {
-    const {
-      showList
-    } = this.state;
     this.props.callbackFromParent(item);
     this.setState(byPropKey('showList', false));
   }
