@@ -65,3 +65,15 @@ export const get = (value) => {
   }
   return promiseBoilerPlate(param);
 }
+
+export const getSet = (id) => {
+  return new Promise((resolve, reject) => {
+    instance.get(`/armor/sets/${id}`)
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(error => {
+        reject(error);
+      })
+  })
+}

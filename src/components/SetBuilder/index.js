@@ -21,7 +21,16 @@ const INITIAL_STATE = {
     waist: {},
   },
   skills: [],
-  decorations: []
+  decorations: {
+    slotsRank1: [],
+    slotsRank2: [],
+    slotsRank3: []
+  },
+  maxDecorations: {
+    rank1: 0,
+    rank2: 0,
+    rank3: 0
+  }
 }
 
 class SetBuilder extends Component {
@@ -38,10 +47,13 @@ class SetBuilder extends Component {
   setSelectedItems = (dataFromChild) => {
     const {
       selectedItems,
-      decorations
+      decorations,
+      maxDecorations
     } = this.state;
 
     let newSelectedItems = {...selectedItems};
+    let decorationsTemp = JSON.parse(JSON.stringify( decorations ));
+    let decorationSet = false;
 
     if(
       dataFromChild.type === 'head' ||
@@ -51,7 +63,19 @@ class SetBuilder extends Component {
       dataFromChild.type === 'legs'
     ) {
       if(!!selectedItems[dataFromChild.type]) {
-        this.setState(() => ({ "skills": [] }))
+        this.setState(() => ({
+          "skills": [],
+          "maxDecorations": {
+            rank1: 0,
+            rank2: 0,
+            rank3: 0
+          },
+          "decorations" : {
+            slotsRank1: [],
+            slotsRank2: [],
+            slotsRank3: []
+          }
+        }))
       }
       newSelectedItems[dataFromChild.type] = dataFromChild;
     } else if(!!dataFromChild.type) {
@@ -59,19 +83,36 @@ class SetBuilder extends Component {
     } else if (dataFromChild.name.includes('Charm')) {
       newSelectedItems.charm = dataFromChild;
     } else {
-      decorations.push(dataFromChild);
+      if(decorationsTemp[`slotsRank${dataFromChild.slot}`].length < maxDecorations[`rank${dataFromChild.slot}`]){
+        decorationsTemp[`slotsRank${dataFromChild.slot}`].push(JSON.parse(JSON.stringify( dataFromChild )));
+
+      }
+      decorationSet = true;
     }
-    this.setState(() => ({ "selectedItems": newSelectedItems, decorations }), () => {
-      this.extractSkills();
+    this.setState(() => ({ "selectedItems": newSelectedItems, "decorations": decorationsTemp }), () => {
+      this.extractSkills(decorationSet);
     });
   }
 
-  extractSkills = () => {
+  extractSkills = (decorationSet) => {
     const {
-      selectedItems
+      selectedItems,
+      decorations,
+      maxDecorations
     } = this.state;
     let skillsTemp = [];
+    let maxDecorationsTemp = JSON.parse(JSON.stringify(maxDecorations));
     for(var key in selectedItems) {
+      if(selectedItems[key].attributes){
+        if(!!selectedItems[key].attributes.slotsRank1){
+          maxDecorationsTemp.rank1 += selectedItems[key].attributes.slotsRank1;
+        } else if(!!selectedItems[key].attributes.slotsRank2) {
+          maxDecorationsTemp.rank2 += selectedItems[key].attributes.slotsRank2;
+        } else if(!!selectedItems[key].attributes.slotsRank3) {
+          maxDecorationsTemp.rank3 += selectedItems[key].attributes.slotsRank3;
+        }
+      }
+
       if(!!selectedItems[key].skills){
         for(var skillKey in selectedItems[key].skills){
           if(skillsTemp.length === 0) {
@@ -91,9 +132,8 @@ class SetBuilder extends Component {
       }
     }
 
-    this.setState(() => ({ "skills": skillsTemp }), () => {
-      console.log(this.state.skills);
-    })
+
+    this.setState(() => ({ "skills": skillsTemp, "maxDecorations": maxDecorationsTemp }));
   }
 
   render(){
@@ -108,7 +148,7 @@ class SetBuilder extends Component {
         <div className="setBuilder__setInfo">
           <PreviewSet selectedItems={selectedItems} />
           <SkillsList skills={skills} />
-          <Status selectedItems={selectedItems} />
+          <Status selectedItems={selectedItems} decorations={decorations}/>
           <DecorationList decorations={decorations} />
         </div>
 

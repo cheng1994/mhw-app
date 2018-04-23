@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './index.css'
 
+import { skills } from '../../../firebase';
+
 const INITIAL_STATE = {
   status: {
     health: 100,
@@ -16,15 +18,18 @@ const INITIAL_STATE = {
       maxSharpness: ''
     },
     defense: {
-      defense: 0,
-      resistFire: 0,
-      resistWater: 0,
-      resistThunder: 0,
-      resistIce: 0,
-      resistDragon: 0
+      base: 0,
+      max: 0,
+      augmented: 0,
+      fire: 0,
+      water: 0,
+      thunder: 0,
+      ice: 0,
+      dragon: 0
     }
   },
-  selectedItems: {}
+  selectedItems: {},
+  decorations: {}
 };
 
 const modifiers = {
@@ -72,8 +77,10 @@ class Status extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if(JSON.stringify(newProps.selectedItems) !== JSON.stringify(this.props.selectedItems)) {
-      this.setState(() => ({ "selectedItems": newProps.selectedItems }), () => {
+    if(JSON.stringify(newProps.selectedItems) !== JSON.stringify(this.props.selectedItems) ||
+      (JSON.stringify(newProps.decorations) !== JSON.stringify(this.props.decorations))
+    ) {
+      this.setState(() => ({ "selectedItems": newProps.selectedItems, "decorations": newProps.decorations }), () => {
         this.calculateStats();
       })
     }
@@ -81,7 +88,8 @@ class Status extends Component {
 
   calculateStats = () => {
     const {
-      selectedItems
+      selectedItems,
+      decorations
     } = this.state;
 
     let newStats = {
@@ -99,34 +107,30 @@ class Status extends Component {
 
       },
       defense: {
-        defense: 0,
-        resistFire: 0,
-        resistWater: 0,
-        resistThunder: 0,
-        resistIce: 0,
-        resistDragon: 0
+        base: 0,
+        max: 0,
+        augmented: 0,
+        fire: 0,
+        water: 0,
+        thunder: 0,
+        ice: 0,
+        dragon: 0
       }
     };
     for(var key in selectedItems) {
-      if(!!selectedItems[key].attributes) {
-        if(!!selectedItems[key].attributes.defense) {
-          newStats.defense.defense += selectedItems[key].attributes.defense;
-        }
-        if(!!selectedItems[key].attributes.resistFire) {
-          newStats.defense.resistFire += selectedItems[key].attributes.resistFire;
-        }
-        if(!!selectedItems[key].attributes.resistWater) {
-          newStats.defense.resistWater += selectedItems[key].attributes.resistWater;
-        }
-        if(!!selectedItems[key].attributes.resistThunder) {
-          newStats.defense.resistThunder += selectedItems[key].attributes.resistThunder;
-        }
-        if(!!selectedItems[key].attributes.resistIce) {
-          newStats.defense.resistIce += selectedItems[key].attributes.resistIce;
-        }
-        if(!!selectedItems[key].attributes.resistDragon) {
-          newStats.defense.resistDragon += selectedItems[key].attributes.resistDragon;
-        }
+      if(!!selectedItems[key].defense) {
+        newStats.defense.base += selectedItems[key].defense.base;
+        newStats.defense.max += selectedItems[key].defense.max;
+        newStats.defense.augmented += selectedItems[key].defense.augmented;
+      }
+      if(!!selectedItems[key].resistances) {
+        newStats.defense.fire += !!selectedItems[key].resistances.fire ? selectedItems[key].resistances.fire : 0;
+        newStats.defense.water += !!selectedItems[key].resistances.water ? selectedItems[key].resistances.water : 0;
+        newStats.defense.thunder += !!selectedItems[key].resistances.thunder ? selectedItems[key].resistances.thunder : 0;
+        newStats.defense.ice += !!selectedItems[key].resistances.ice ? selectedItems[key].resistances.ice : 0;
+        newStats.defense.dragon += !!selectedItems[key].resistances.dragon ? selectedItems[key].resistances.dragon : 0;
+      }
+      if(!!selectedItems[key].attributes){
         if(!!selectedItems[key].attributes.attack) {
           newStats.attack.attack = selectedItems[key].attributes.attack;
           newStats.attack.raw = selectedItems[key].attributes.attack/modifiers[selectedItems[key].type]
@@ -196,7 +200,6 @@ class Status extends Component {
             if(!!!selectedItems.weapon.type){
               newStats.attack[modKey] += selectedItems[itemKey].skills[skillKey].modifiers[modKey];
             } else {
-              debugger;
               newStats.attack[modKey] += (selectedItems[itemKey].skills[skillKey].modifiers[modKey] * modifiers[selectedItems.weapon.type]);
             }
             newStats.attack.raw += selectedItems[itemKey].skills[skillKey].modifiers[modKey];
@@ -205,6 +208,30 @@ class Status extends Component {
             newStats.attack[modKey] += selectedItems[itemKey].skills[skillKey].modifiers[modKey];
           } else if(modKey.includes("resist") || modKey === 'defense') {
             newStats.defense[modKey] += selectedItems[itemKey].skills[skillKey].modifiers[modKey];
+          }
+        }
+      }
+    }
+    for(var key in decorations) {
+      for(var decKey in decorations[key]) {
+        if(!!decorations[key][decKey].skill) {
+          let decorationSkill = skills.skillsList.filter((item) => item.id == decorations[key][decKey].skill)[0];
+          for(var modKey in decorationSkill.ranks[0].modifiers){
+            if(modKey === 'health' || modKey === 'defense'){
+              newStats[modKey] += decorationSkill.ranks[0].modifiers[modKey];
+            } else if(modKey === 'attack') {
+              if(!!!selectedItems.weapon.type){
+                newStats.attack[modKey] += decorationSkill.ranks[0].modifiers[modKey];
+              } else {
+                newStats.attack[modKey] += (decorationSkill.ranks[0].modifiers[modKey] * modifiers[selectedItems.weapon.type]);
+              }
+              newStats.attack.raw += decorationSkill.ranks[0].modifiers[modKey];
+            } else if(modKey === 'affinity') {
+              newStats.affinity += decorationSkill.ranks[0].modifiers
+              newStats.attack[modKey] += decorationSkill.ranks[0].modifiers[modKey];
+            } else if(modKey.includes("resist") || modKey === 'defense') {
+              newStats.defense[modKey] += decorationSkill.ranks[0].modifiers[modKey];
+            }
           }
         }
       }
@@ -234,7 +261,7 @@ class Status extends Component {
               {
                 (key === 'elementDamage' && 'Element Damage') ||
                 (key === 'elementType' && 'Element Type') ||
-                (key !== 'maxSharpness' && key.replace("resist", ""))
+                (key !== 'maxSharpness' && key)
               }
             </div>
             <div className="status__itemValue">{
