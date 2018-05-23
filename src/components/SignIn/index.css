@@ -1,0 +1,39 @@
+.signIn {
+  margin: 0 auto;
+  max-width: 20rem;
+}
+
+.signIn__title {
+  color: white;
+  font-weight: 400;
+}
+
+.signIn__input {
+  display: block;
+  margin: 1rem 0;
+  padding: 1rem 1.5rem;
+  box-sizing: border-box;
+  border-radius: .5rem;
+  outline: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: rgba(105,105,105,0.5);
+  color: white;
+  border: 0;
+}
+
+.signIn__input::placeholder {
+  color: white;
+  opacity: 0.8;
+}
+
+.signIn__button {
+  background:none;
+  border:none;
+  font-size:1.5rem;
+  color: white;
+  border: 1px solid grey;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  line-height: 1.5;
+}

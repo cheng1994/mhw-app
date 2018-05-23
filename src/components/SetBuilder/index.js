@@ -21,16 +21,7 @@ const INITIAL_STATE = {
     waist: {},
   },
   skills: [],
-  decorations: {
-    slotsRank1: [],
-    slotsRank2: [],
-    slotsRank3: []
-  },
-  maxDecorations: {
-    rank1: 0,
-    rank2: 0,
-    rank3: 0
-  }
+  decorations: []
 }
 
 class SetBuilder extends Component {
@@ -47,13 +38,11 @@ class SetBuilder extends Component {
   setSelectedItems = (dataFromChild) => {
     const {
       selectedItems,
-      decorations,
-      maxDecorations
+      decorations
     } = this.state;
 
     let newSelectedItems = {...selectedItems};
-    let decorationsTemp = JSON.parse(JSON.stringify( decorations ));
-    let decorationSet = false;
+    let decorationsTemp = {...decorations};
 
     if(
       dataFromChild.type === 'head' ||
@@ -65,53 +54,38 @@ class SetBuilder extends Component {
       if(!!selectedItems[dataFromChild.type]) {
         this.setState(() => ({
           "skills": [],
-          "maxDecorations": {
-            rank1: 0,
-            rank2: 0,
-            rank3: 0
-          },
-          "decorations" : {
-            slotsRank1: [],
-            slotsRank2: [],
-            slotsRank3: []
-          }
         }))
       }
       newSelectedItems[dataFromChild.type] = dataFromChild;
+      for(var key in newSelectedItems[dataFromChild.type].slots) {
+        decorationsTemp.push(newSelectedItems[dataFromChild.type].slots[key]);
+      }
     } else if(!!dataFromChild.type) {
       newSelectedItems.weapon = dataFromChild;
+      for(var key in newSelectedItems.weapon.slots) {
+        decorationsTemp.push(newSelectedItems.weapon.slots[key]);
+      }
     } else if (dataFromChild.name.includes('Charm')) {
       newSelectedItems.charm = dataFromChild;
     } else {
-      if(decorationsTemp[`slotsRank${dataFromChild.slot}`].length < maxDecorations[`rank${dataFromChild.slot}`]){
-        decorationsTemp[`slotsRank${dataFromChild.slot}`].push(JSON.parse(JSON.stringify( dataFromChild )));
-
+      for(var key in decorations) {
+        if(!!!decorations[key].decoration && dataFromChild.slot === decorations[key].rank){
+          decorations[key].deco = dataFromChild;
+        }
       }
-      decorationSet = true;
     }
     this.setState(() => ({ "selectedItems": newSelectedItems, "decorations": decorationsTemp }), () => {
-      this.extractSkills(decorationSet);
+      this.extractSkills();
     });
   }
 
-  extractSkills = (decorationSet) => {
+  extractSkills = () => {
     const {
       selectedItems,
-      decorations,
-      maxDecorations
+      decorations
     } = this.state;
     let skillsTemp = [];
-    let maxDecorationsTemp = JSON.parse(JSON.stringify(maxDecorations));
     for(var key in selectedItems) {
-      if(selectedItems[key].attributes){
-        if(!!selectedItems[key].attributes.slotsRank1){
-          maxDecorationsTemp.rank1 += selectedItems[key].attributes.slotsRank1;
-        } else if(!!selectedItems[key].attributes.slotsRank2) {
-          maxDecorationsTemp.rank2 += selectedItems[key].attributes.slotsRank2;
-        } else if(!!selectedItems[key].attributes.slotsRank3) {
-          maxDecorationsTemp.rank3 += selectedItems[key].attributes.slotsRank3;
-        }
-      }
 
       if(!!selectedItems[key].skills){
         for(var skillKey in selectedItems[key].skills){
@@ -133,7 +107,7 @@ class SetBuilder extends Component {
     }
 
 
-    this.setState(() => ({ "skills": skillsTemp, "maxDecorations": maxDecorationsTemp }));
+    this.setState(() => ({ "skills": skillsTemp }));
   }
 
   render(){

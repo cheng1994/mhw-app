@@ -6,6 +6,54 @@
 
 .setBuilder__setInfo {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
+}
+
+.skill {
+  grid-row-start: 2;
+}
+
+.previewSet__container {
+  grid-column: 1/4;
+}
+
+.decorationList {
+  grid-row-start: 3;
+}
+
+.setBuilder__setInfo > * {
+  max-width: 100%;
+}
+
+@media (min-width: 800px) {
+  .setBuilder__setInfo {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .decorationList {
+    grid-row-start: 2;
+    grid-column-start: 3;
+  }
+}
+
+@media (min-width: 1080px) {
+  .setBuilder__setInfo {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .previewSet__container {
+    grid-column: 1/2;
+  }
+
+  .skill {
+    grid-row-start: 2;
+    grid-column: 2/3;
+  }
+
+  .decorationList {
+    grid-row-start: 1;
+    grid-column: 3/4;
+  }
 }

@@ -171,7 +171,7 @@ class Search extends Component {
             (filters.type === 'Weapons' || filters.type === 'Armor') &&
             <DropDown
               index="3"
-              filter="Decoration Level"
+              filter="Decorations"
               items={slots}
               callbackFromParent={item => this.setFilters(item, 'deco')}
             />

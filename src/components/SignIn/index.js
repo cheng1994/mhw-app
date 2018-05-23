@@ -5,11 +5,12 @@ import { SignUpLink } from '../SignUp';
 import { PasswordForgetLink } from '../PasswordForget';
 import { auth } from '../../firebase';
 import * as routes from '../../constants/routes';
+import './index.css';
 
 const SignInPage = ({ history }) => (
-  <div>
-    <h1>Sign In</h1>
-    <SignInForm history={history} />
+  <div className="signIn">
+    <h1 className="signIn__title">Sign In</h1>
+    <SignInForm className="signIn__form" history={history} />
     <PasswordForgetLink />
     <SignUpLink />
   </div>
@@ -64,18 +65,20 @@ class SignInForm extends Component {
     return (
       <form onSubmit={this.onSubmit}>
         <input
+          className="signIn__input"
           value={email}
           onChange={event => this.setState({ 'email': event.target.value })}
           type="text"
           placeholder="Email Address"
         />
         <input
+          className="signIn__input"
           value={password}
           onChange={event => this.setState({ 'password': event.target.value })}
           type="password"
           placeholder="Password"
         />
-        <button disabled={isInvalid} type="submit">
+        <button className="signIn__button" disabled={isInvalid} type="submit">
           Sign In
         </button>
 

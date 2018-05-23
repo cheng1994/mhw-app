@@ -138,8 +138,10 @@ class Status extends Component {
         if(!!selectedItems[key].attributes.elderseal) {
           newStats.attack.elderseal = selectedItems[key].attributes.elderseal;
         }
-        if(!!selectedItems[key].attributes.elementDamage) {
-          newStats.attack.elementDamage = selectedItems[key].attributes.elementDamage;
+        if(!!selectedItems[key].elements) {
+          newStats.attack.elementDamage = selectedItems[key].elements.damage;
+          newStats.attack.elementType = selectedItems[key].elements.type;
+          newStats.attack.elementHidden = selectedItems[key].elements.hidden;
         }
         if(!!selectedItems[key].attributes.elementType) {
           newStats.attack.elementType = selectedItems[key].attributes.elementType;
@@ -147,47 +149,49 @@ class Status extends Component {
         if(!!selectedItems[key].attributes.affinity) {
           newStats.attack.affinity += selectedItems[key].attributes.affinity;
         }
-        if(!!selectedItems[key].attributes.sharpnessRed) {
-          newStats.attack.sharpness += `
-            <div
-              style="width:${selectedItems[key].attributes.sharpnessRed/20}rem;"
-              class="status__sharpness status__sharpness--red"></div>`;
-          newStats.attack.maxSharpness = 'red';
-        }
-        if(!!selectedItems[key].attributes.sharpnessOrange) {
-          newStats.attack.sharpness += `
-            <div
-              style="width:${selectedItems[key].attributes.sharpnessOrange/20}rem"
-              class="status__sharpness status__sharpness--orange"></div>`;
-          newStats.attack.maxSharpness = 'orange';
-        }
-        if(!!selectedItems[key].attributes.sharpnessYellow) {
-          newStats.attack.sharpness += `
-            <div
-              style="width:${selectedItems[key].attributes.sharpnessYellow/20}rem"
-              class="status__sharpness status__sharpness--yellow"></div>`;
-          newStats.attack.maxSharpness = 'yellow';
-        }
-        if(!!selectedItems[key].attributes.sharpnessGreen) {
-          newStats.attack.sharpness += `
-            <div
-              style="width:${selectedItems[key].attributes.sharpnessGreen/20}rem"
-              class="status__sharpness status__sharpness--green"></div>`;
-          newStats.attack.maxSharpness = 'green';
-        }
-        if(!!selectedItems[key].attributes.sharpnessBlue) {
-          newStats.attack.sharpness += `
-            <div
-              style="width:${selectedItems[key].attributes.sharpnessBlue/20}rem"
-              class="status__sharpness status__sharpness--blue"></div>`;
-          newStats.attack.maxSharpness = 'blue';
-        }
-        if(!!selectedItems[key].attributes.sharpnessWhite) {
-          newStats.attack.sharpness += `
-            <div
-              style="width:${selectedItems[key].attributes.sharpnessWhite/20}rem"
-              class="status__sharpness status__sharpness--white"></div>`;
-          newStats.attack.maxSharpness = 'white';
+        if(!!selectedItems[key].sharpness) {
+          if(selectedItems[key].sharpness.red){
+            newStats.attack.sharpness += `
+              <div
+                style="width:${selectedItems[key].sharpness.red/20}rem;"
+                class="status__sharpness status__sharpness--red"></div>`;
+            newStats.attack.maxSharpness = 'red';
+          }
+          if(selectedItems[key].sharpness.orange){
+            newStats.attack.sharpness += `
+              <div
+                style="width:${selectedItems[key].sharpness.orange/20}rem;"
+                class="status__sharpness status__sharpness--orange"></div>`;
+            newStats.attack.maxSharpness = 'orange';
+          }
+          if(selectedItems[key].sharpness.yellow){
+            newStats.attack.sharpness += `
+              <div
+                style="width:${selectedItems[key].sharpness.yellow/20}rem;"
+                class="status__sharpness status__sharpness--yellow"></div>`;
+            newStats.attack.maxSharpness = 'yellow';
+          }
+          if(selectedItems[key].sharpness.green){
+            newStats.attack.sharpness += `
+              <div
+                style="width:${selectedItems[key].sharpness.green/20}rem;"
+                class="status__sharpness status__sharpness--green"></div>`;
+            newStats.attack.maxSharpness = 'green';
+          }
+          if(selectedItems[key].sharpness.blue){
+            newStats.attack.sharpness += `
+              <div
+                style="width:${selectedItems[key].sharpness.blue/20}rem;"
+                class="status__sharpness status__sharpness--blue"></div>`;
+            newStats.attack.maxSharpness = 'blue';
+          }
+          if(selectedItems[key].sharpness.white){
+            newStats.attack.sharpness += `
+              <div
+                style="width:${selectedItems[key].sharpness.white/20}rem;"
+                class="status__sharpness status__sharpness--white"></div>`;
+            newStats.attack.maxSharpness = 'white';
+          }
         }
       }
     }
@@ -261,7 +265,7 @@ class Status extends Component {
               {
                 (key === 'elementDamage' && 'Element Damage') ||
                 (key === 'elementType' && 'Element Type') ||
-                (key !== 'maxSharpness' && key)
+                (key !== 'maxSharpness' && key !== 'elementHidden' && key)
               }
             </div>
             <div className="status__itemValue">{
